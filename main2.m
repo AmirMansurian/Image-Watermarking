@@ -3,8 +3,8 @@ clear all
 close all
 
 
-Image = imread('Hi.tif');
-J = imread('IUT.tif');
+Image = imread('lena.bmp');
+J = imread('iut5.bmp');
 
 I = dct2(Image);
 
