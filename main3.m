@@ -7,7 +7,7 @@ Image = imread('lena.bmp');
 J = imread('iut5.bmp');
 J = imbinarize(J);
 
-Watermarked = embed_proj(Image, 8, 4, J, 70);
+Watermarked = embed_proj(Image, 8, 4, J, 50);
 
 attack_proj(Watermarked, 8, 4, J);
 

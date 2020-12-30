@@ -9,6 +9,12 @@ function W_image = embed_proj(I, B, a, W2D, alpha)
    W1d = zeros(1, Vector_Size);
    W2D = imresize(W2D, [row/B, col/B]);
    [ROW, COL] = size(W2D);
+   
+   for i=1: 1: ROW
+       for j=1: 1: COL
+            
+       end
+   end
     
     DCT = zeros(row, col);
     DCT2 = zeros(row, col);
@@ -60,7 +66,7 @@ function W_image = embed_proj(I, B, a, W2D, alpha)
     
     subplot(1, 2, 1)
     imshow(I);
-    title([Original Image');
+    title(['Original Image' '    PSNR = ' num2str(psnr(I, W_image))]);
 
     subplot(1, 2, 2)
     imshow(W_image, []);

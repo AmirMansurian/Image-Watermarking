@@ -6,9 +6,15 @@ function W_image = embed_proj(I, B, a, W2D, alpha)
    I = imresize(I, [row, col]);
    
    Vector_Size = (row*col)/(B*B);
-   W1d = zeros(1, Vector_Size);
+   W1D = zeros(1, Vector_Size);
    W2D = imresize(W2D, [row/B, col/B]);
    [ROW, COL] = size(W2D);
+   
+   for i=1: 1: ROW
+       for j=1: 1: COL
+            W1D(1, ((i-1)*COL + j)) = W2D(i, j);
+       end
+   end
     
     DCT = zeros(row, col);
     DCT2 = zeros(row, col);
