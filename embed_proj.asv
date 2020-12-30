@@ -57,5 +57,13 @@ function W_image = embed_proj(I, B, a, W2D, alpha)
      end
 
     W_image = uint8(DCT2);
+    
+    subplot(1, 2, 1)
+    imshow(I);
+    title([Original Image');
+
+    subplot(1, 2, 2)
+    imshow(W_image, []);
+    title('Watermarked Image');
 
 end
