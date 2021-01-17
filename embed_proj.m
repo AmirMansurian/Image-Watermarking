@@ -1,9 +1,11 @@
-function W_image = embed_proj(I, B, a, W2D, alpha)
+function [W_image, WW] = embed_proj(I, B, a, W2D, alpha)
 
    [row, col] = size(I);
-   row = row + (B - rem(row, B));
-   col = col + (B - rem(col, B));
-   I = imresize(I, [row, col]);
+    DCT = zeros(row, col);
+    DCT2 = zeros(row, col);
+    
+   row = row - rem(row, B);
+   col = col - rem(col, B);
    
    Vector_Size = (row*col)/(B*B);
    W1D = zeros(1, Vector_Size);
@@ -16,8 +18,7 @@ function W_image = embed_proj(I, B, a, W2D, alpha)
        end
    end
     
-    DCT = zeros(row, col);
-    DCT2 = zeros(row, col);
+
     
      for i=1: 1: ROW
         for j=1: 1: COL
@@ -62,7 +63,21 @@ function W_image = embed_proj(I, B, a, W2D, alpha)
         end
      end
 
+    [row, col] = size(I);
+    for i=1: 1: rem(row, B) 
+        for j=1: 1: col
+            DCT2(row - rem(row, B)+i, j) = I(row - rem(row, B)+i, j);
+        end
+    end
+    
+    for i=1: 1: row 
+        for j=1: 1: rem(col, B)
+            DCT2(i, col - rem(col, B)+j) = I(i, col - rem(col, B)+j);
+        end
+    end
+    
     W_image = uint8(DCT2);
+    WW = DCT;
     
     subplot(1, 2, 1)
     imshow(I);
@@ -71,5 +86,6 @@ function W_image = embed_proj(I, B, a, W2D, alpha)
     subplot(1, 2, 2)
     imshow(W_image, []);
     title('Watermarked Image');
-
+    
+    
 end

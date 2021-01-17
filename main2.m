@@ -6,12 +6,17 @@ close all
 Image = imread('lena.bmp');
 J = imread('iut5.bmp');
 
-I = dct2(Image);
 
+[row, col] = size(Image);
+   row = row + (8 - rem(row, 8));
+   col = col + (8 - rem(col, 8));
+   Image = imresize(Image, [row, col]);
+J = imresize(J, [row/8, col/8]);
+   
 DCT = zeros(size(Image));
 DCT2 = zeros(size(Image));
 
-[row, col] = size(I);
+[row, col] = size(Image); 
 [ROW, COL] = size(J);
 
 for i=1: 1: ROW

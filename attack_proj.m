@@ -1,4 +1,4 @@
-function attack_proj( W_image, B, a, W2D)
+function [WW, nc] = attack_proj( W_image, B, a, W2D)
 
     imwrite(W_image, 'W_image100.jpg', 'quality', 100);
     imwrite(W_image, 'W_image80.jpg', 'quality', 80);
@@ -13,6 +13,8 @@ function attack_proj( W_image, B, a, W2D)
     DCT60 = zeros(size(W_image));
     
     [ROW, COL] = size(W_image);
+    ROW = ROW - rem(ROW, B);
+    COL = COL - rem(COL, B);
     ROW = ROW/B;
     COL = COL/B;
     W2D = imresize(W2D, [ROW, COL]);
@@ -68,6 +70,7 @@ function attack_proj( W_image, B, a, W2D)
         end
     end
     
+    WW = DCT60;
     counter100 = 0;
     counter80 = 0;
     counter60 = 0;
@@ -101,10 +104,12 @@ function attack_proj( W_image, B, a, W2D)
 
     subplot(1, 3, 2)
     imshow(Extracted80);
-    title(['NC80 = ' num2str(counter80)]);
+   title(['NC80 = ' num2str(counter80)]);
     
     subplot(1, 3, 3)
     imshow(Extracted60);
     title(['NC60 = ' num2str(counter60)]);
 
+    nc = counter60;
+    
 end
