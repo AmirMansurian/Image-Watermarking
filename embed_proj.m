@@ -80,7 +80,7 @@ function W_image = embed_proj(I, B, a, W2D, K, alpha)
     
     W_image = uint8(DCT2);
 
-    
+    figure
     subplot(1, 2, 1)
     imshow(I);
     title(['Original Image' '    PSNR = ' num2str(psnr(I, W_image))]);

@@ -13,9 +13,9 @@ nc = zeros(1, 100);
 mse = zeros(1, 100);
 
 for i=1: 1: 100
-    [Watermarked, DCT] = embed_proj(Image, 10, 5, J, i);
+    Watermarked = embed_proj(Image, 10, 5, J, 19, i);
     mse(1, i) = MSE(Image, Watermarked);
-    [DCT2, nc(1, i)] = attack_proj(Watermarked, 10, 5, J);
+    [DCT2, nc(1, i)] = attack_proj(Watermarked, 10, 5, 19, J);
     arr(1, i) = nc(1, i)*mse(1, i);
 end
 

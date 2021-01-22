@@ -1,4 +1,4 @@
-function [W_image, WW, WWW,  arr] = main_Adaptive(I, B, a, W2D, K, alpha)
+function W_image = main_Adaptive(I, B, a, W2D, K, alpha)
 
    [row, col] = size(I);
    row = row + (B - rem(row, B));
@@ -27,9 +27,7 @@ function [W_image, WW, WWW,  arr] = main_Adaptive(I, B, a, W2D, K, alpha)
    
     DCT = zeros(row, col);
     DCT2 = zeros(row, col);
-    
-    arr = zeros(1, ROW*COL);
-    count = 1;
+   
     
      for i=1: 1: ROW
         for j=1: 1: COL
@@ -37,13 +35,11 @@ function [W_image, WW, WWW,  arr] = main_Adaptive(I, B, a, W2D, K, alpha)
             DCT(1+(i-1)*B:i*B, 1+(j-1)*B:j*B) = dct2(I(1+(i-1)*B:i*B, 1+(j-1)*B:j*B));
             Edge(1+(i-1)*B:i*B, 1+(j-1)*B:j*B) = dct2(E(1+(i-1)*B:i*B, 1+(j-1)*B:j*B));
             
-            Brightness(1, (i-1)*COL + j) = DCT(1+(i-1)*B, 1+(j-1)*B);
             Edges(1, (i-1)*COL + j) = Edge(1+(i-1)*B, 1+(j-1)*B);
            
         end
      end
-     
-     Brightness = Brightness / max(Brightness);
+
      Edges = Edges / max(Edges);
      
      for i=1: 1: ROW
@@ -52,12 +48,8 @@ function [W_image, WW, WWW,  arr] = main_Adaptive(I, B, a, W2D, K, alpha)
             c = DCT(a+(i-1)*B, a+1+(j-1)*B); 
             d = DCT(a+1+(i-1)*B, a+(j-1)*B);
             
-            Embed =  sqrt(Brightness(1, (i-1)*COL + j))*alpha + Edges(1, (i-1)*COL + j)*alpha;
-            
-            
-            arr(1, count) = Embed;
-            count = count + 1;
-            
+             Embed = 0.5*alpha + 0.5*Edges(1, (i-1)*COL + j)*alpha;
+                                     
             if  c > d && W1D(1, (i-1)*COL + j) == 0
 
                 DCT(a+(i-1)*B, a+1+(j-1)*B) = d - Embed;
@@ -94,8 +86,7 @@ function [W_image, WW, WWW,  arr] = main_Adaptive(I, B, a, W2D, K, alpha)
      end
 
     W_image = uint8(DCT2);
-    WW = Brightness;
-    WWW = Edges;
+
     
     subplot(1, 2, 1)
     imshow(I);
