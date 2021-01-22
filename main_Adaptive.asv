@@ -1,4 +1,4 @@
-function [W_image, WW, WWW,  arr] = main_Adaptive(I, B, a, W2D, K, alpha)
+function [W_image, WW, WWW,  arr] = main_Adaptive(I, B, a, W2D, alpha)
 
    [row, col] = size(I);
    row = row + (B - rem(row, B));
@@ -18,9 +18,7 @@ function [W_image, WW, WWW,  arr] = main_Adaptive(I, B, a, W2D, K, alpha)
        end
    end
     
-   rng(K);
-   index = randperm(Vector_Size); 
-   W1D = W1D(index); 
+   
    
    E = edge(I, 'canny');
    Edge = zeros(row, col);
@@ -52,38 +50,38 @@ function [W_image, WW, WWW,  arr] = main_Adaptive(I, B, a, W2D, K, alpha)
             c = DCT(a+(i-1)*B, a+1+(j-1)*B); 
             d = DCT(a+1+(i-1)*B, a+(j-1)*B);
             
-            Embed =  sqrt(Brightness(1, (i-1)*COL + j))*alpha + Edges(1, (i-1)*COL + j)*alpha;
+            Embed =  sqrt(Brightness(1, (i-1)*COL + j))*alpha + Edges(1, (i-1)*COL + j);
             
             
             arr(1, count) = Embed;
             count = count + 1;
             
-            if  c > d && W1D(1, (i-1)*COL + j) == 0
+            if  c > d && W2D(i, j) == 0
 
                 DCT(a+(i-1)*B, a+1+(j-1)*B) = d - Embed;
                 DCT(a+1+(i-1)*B, a+(j-1)*B) = c + Embed;
 
-            elseif c > d && W1D(1, (i-1)*COL + j) == 1
+            elseif c > d && W2D(i, j) == 1
 
                 DCT(a+(i-1)*B, a+1+(j-1)*B) = c + Embed;
                 DCT(a+1+(i-1)*B, a+(j-1)*B) = d - Embed;
 
-            elseif c < d && W1D(1, (i-1)*COL + j) == 1
+            elseif c < d && W2D(i, j) == 1
 
                 DCT(a+(i-1)*B, a+1+(j-1)*B) = d + Embed;
                 DCT(a+1+(i-1)*B, a+(j-1)*B) = c - Embed;
 
-            elseif c < d && W1D(1, (i-1)*COL + j) == 0
+            elseif c < d && W2D(i, j) == 0
 
                 DCT(a+(i-1)*B, a+1+(j-1)*B) = c - Embed;
                 DCT(a+1+(i-1)*B, a+(j-1)*B) = d + Embed;
 
-            elseif c == d &&  W1D(1, (i-1)*COL + j) == 0
+            elseif c == d &&  W2D(i, j) == 0
 
                 DCT(a+1+(i-1)*B, a+(j-1)*B) = c + Embed;
                 DCT(a+(i-1)*B, a+1+(j-1)*B) = d - Embed;
             
-            elseif c == d &&  W1D(1, (i-1)*COL + j) == 1
+            elseif c == d &&  W2D(i, j) == 1
 
                 DCT(a+1+(i-1)*B, a+(j-1)*B) = c - Embed;
                 DCT(a+(i-1)*B, a+1+(j-1)*B) = d + Embed;

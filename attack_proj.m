@@ -1,4 +1,4 @@
-function [WW, nc] = attack_proj( W_image, B, a, W2D)
+function attack_proj( W_image, B, a, K, W2D)
 
     imwrite(W_image, 'W_image100.jpg', 'quality', 100);
     imwrite(W_image, 'W_image80.jpg', 'quality', 80);
@@ -22,8 +22,16 @@ function [WW, nc] = attack_proj( W_image, B, a, W2D)
     W1D100 = zeros(1, ROW*COL);
     W1D80 = zeros(1, ROW*COL);
     W1D60 = zeros(1, ROW*COL);
+    W1D = zeros(1, ROW*COL);
+    
+    for i=1: 1: ROW
+       for j=1: 1: COL
+            W1D(1, ((i-1)*COL + j)) = W2D(i, j);
+       end
+   end
+   
 
-    Extracted100 = zeros(ROW, COL);
+    Extracted100 = zeros(ROW, COL);    
     Extracted80 = zeros(ROW, COL);
     Extracted60 = zeros(ROW, COL);
 
@@ -38,10 +46,8 @@ function [WW, nc] = attack_proj( W_image, B, a, W2D)
             d = DCT100(a+1+(i-1)*B, a+(j-1)*B);
 
             if  c > d
-                Extracted100(i, j) = 1;
                 W1D100(1, ((i-1)*COL + j)) = 1;
             elseif d > c
-                Extracted100(i, j) = 0;
                 W1D100(1, ((i-1)*COL + j)) = 0;
             end
             
@@ -49,10 +55,8 @@ function [WW, nc] = attack_proj( W_image, B, a, W2D)
             d = DCT80(a+1+(i-1)*B, a+(j-1)*B);
 
             if  c > d
-                Extracted80(i, j) = 1;
                 W1D80(1, ((i-1)*COL + j)) = 1;
             elseif d > c
-                Extracted80(i, j) = 0;
                 W1D80(1, ((i-1)*COL + j)) = 0;
             end
             
@@ -60,32 +64,44 @@ function [WW, nc] = attack_proj( W_image, B, a, W2D)
             d = DCT60(a+1+(i-1)*B, a+(j-1)*B);
 
             if  c > d
-                Extracted60(i, j) = 1;
                 W1D60(1, ((i-1)*COL + j)) = 1;
             elseif d > c
-                Extracted60(i, j) = 0;
                 W1D60(1, ((i-1)*COL + j)) = 0;
             end
             
         end
     end
+        
+    rng(K);
+    index100 = randperm(ROW*COL);
+    [~, index100] = sort(index100);
+    W1D100 = W1D100(index100);
     
-    WW = DCT60;
+    rng(K);
+    index80 = randperm(ROW*COL);
+    [~, index80] = sort(index80);
+    W1D80 = W1D80(index80);
+    
+    rng(K);
+    index60 = randperm(ROW*COL);
+    [~, index60] = sort(index60);
+    W1D60 = W1D60(index60);
+    
     counter100 = 0;
     counter80 = 0;
     counter60 = 0;
     for i=1: 1: ROW
         for j=1: 1: COL
             
-            if (W2D(i, j) == 0 && Extracted100(i, j) == 0) || (W2D(i, j) == 1 && Extracted100(i, j) == 1)
+            if (W1D(1, (i-1)*COL + j) == 0 && W1D100(1, (i-1)*COL + j) == 0) || (W1D(1, (i-1)*COL + j) == 1 && W1D100(1, (i-1)*COL + j) == 1)
                 counter100 = counter100 + 1;
             end 
             
-             if (W2D(i, j) == 0 && Extracted80(i, j) == 0) || (W2D(i, j) == 1 && Extracted80(i, j) == 1)
+             if (W1D(1, (i-1)*COL + j) == 0 && W1D80(1, (i-1)*COL + j) == 0) || (W1D(1, (i-1)*COL + j) == 1 && W1D80(1, (i-1)*COL + j) == 1)
                 counter80 = counter80 + 1;
              end 
             
-             if (W2D(i, j) == 0 && Extracted60(i, j) == 0) || (W2D(i, j) == 1 && Extracted60(i, j) == 1)
+             if (W1D(1, (i-1)*COL + j) == 0 && W1D60(1, (i-1)*COL + j) == 0) || (W1D(1, (i-1)*COL + j) == 1 && W1D60(1, (i-1)*COL + j) == 1)
                 counter60 = counter60 + 1;
             end 
         end
@@ -95,6 +111,15 @@ function [WW, nc] = attack_proj( W_image, B, a, W2D)
     counter80 = counter80 / (ROW*COL);
     counter60 = counter60 / (ROW*COL);
     
+    
+    for i=1: 1: ROW
+       for j=1: 1: COL
+            Extracted100(i, j) = W1D100(1, ((i-1)*COL + j));
+            Extracted80(i, j) = W1D80(1, ((i-1)*COL + j));
+            Extracted60(i, j) = W1D60(1, ((i-1)*COL + j));
+       end
+   end
+   
 
 
     figure 
@@ -109,7 +134,5 @@ function [WW, nc] = attack_proj( W_image, B, a, W2D)
     subplot(1, 3, 3)
     imshow(Extracted60);
     title(['NC60 = ' num2str(counter60)]);
-
-    nc = counter60;
-    
+        
 end

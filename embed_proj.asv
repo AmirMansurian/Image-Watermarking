@@ -2,6 +2,7 @@ function W_image = embed_proj(I, B, a, W2D, K, alpha)
 
    [row, col] = size(I);
     DCT = zeros(row, col);
+    Edge = zeros(row, col);
     DCT2 = zeros(row, col);
     
    row = row - rem(row, B);
@@ -26,7 +27,8 @@ function W_image = embed_proj(I, B, a, W2D, K, alpha)
         for j=1: 1: COL
 
             DCT(1+(i-1)*B:i*B, 1+(j-1)*B:j*B) = dct2(I(1+(i-1)*B:i*B, 1+(j-1)*B:j*B));
-            
+            Edge(1+(i-1)*B:i*B, 1+(j-1)*B:j*B) = dct2(I(1+(i-1)*B:i*B, 1+(j-1)*B:j*B));
+
             c = DCT(a+(i-1)*B, a+1+(j-1)*B); 
             d = DCT(a+1+(i-1)*B, a+(j-1)*B);
 

@@ -15,6 +15,8 @@ J = imresize(J, [row/8, col/8]);
    
 DCT = zeros(size(Image));
 DCT2 = zeros(size(Image));
+   E = edge(Image, 'canny');
+   Edge = zeros(row, col);
 
 [row, col] = size(Image); 
 [ROW, COL] = size(J);
@@ -23,7 +25,11 @@ for i=1: 1: ROW
     for j=1: 1: COL
         
         DCT(1+(i-1)*8:i*8, 1+(j-1)*8:j*8) = dct2(Image(1+(i-1)*8:i*8, 1+(j-1)*8:j*8));
+        Edge(1+(i-1)*8:i*8, 1+(j-1)*8:j*8) = dct2(E(1+(i-1)*8:i*8, 1+(j-1)*8:j*8));
         
+        
+            Brightness = DCT(1+(i-1)*8, 1+(j-1)*8);
+            Edges = Edge(1+(i-1)*8, 1+(j-1)*8);
         a = DCT(4+(i-1)*8, 5+(j-1)*8); 
         b = DCT(5+(i-1)*8, 4+(j-1)*8);
         
@@ -67,7 +73,7 @@ imshow(uint8(DCT2));
 
 DCT3 = DCT;
 
-imwrite(DCT2, 'gg.jpg', 'quality', 40);
+imwrite(DCT2, 'gg.jpg', 'quality', 60);
 I = imread('gg.jpg');
 
 K = zeros(size(J));
